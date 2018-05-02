@@ -82,7 +82,7 @@ def countStates(q):
     return visited
 
 # Função para executar um Episódio:
-def runEpisode(intervalDist, Q, explore):
+def runEpisode(intervalDist, Q, explore, epn):
     observation = env.reset() # Reinicia as variáveis do Ambiente Observado.
     done = False # Variável que controla o fim do Episódio.
     cnt = 0 # Variável que conta o número de ações realizadas no Episódio.
@@ -100,7 +100,8 @@ def runEpisode(intervalDist, Q, explore):
                 act = maxDict(Q[state])[0] # Toma a ação com melhor Recompensa.
         # Opção de Renderização do Ambiente:
         if PLOT_ALL_EPS and not explore: # Pode ser desabilitada para fins de treinamento utilizando menos processamento.
-            env.render()
+            if epn % 100 == 0:
+                env.render()
         # Tomando uma Ação:
         # Para cada vez que uma Ação é tomada, as Variáveis de Ambiente são atualizadas, assim como a Recompensa e a flag de Falha.
         observation, reward, done, _ = env.step(act) # Sempre que uma Ação é executada com sucesso, a Recompensa é +1.
@@ -135,7 +136,7 @@ def runNEpisodes(intervalDist, explore, N=10000):
         # Taxa de Exploração:
         explore = explore * EXPLORE_RATE
         # Executando um Episódio:
-        episode_reward, episode_length = runEpisode(intervalDist, Q, explore)
+        episode_reward, episode_length = runEpisode(intervalDist, Q, explore, n)
         if n % 100 == 0:
             print("Episodio:", n, "| Recompensa:", episode_reward, "| Exploratorion:", explore)
         # Rotina que Salva o Dicionário em sua configuração atual.
